@@ -14,7 +14,7 @@ Protected Module M_UUID
 		  
 		  var p as ptr = uuid
 		  
-		  var ms as UInt64
+		  var µs as UInt64
 		  
 		  #If TargetWindows
 		    // --- Windows Implementation ---
@@ -37,7 +37,7 @@ Protected Module M_UUID
 		    Const EPOCH_DIFFERENCE_100NS As UInt64 = 116444736000000000
 		    
 		    // Subtract the epoch difference and convert to seconds
-		    ms = (fileTime64 - EPOCH_DIFFERENCE_100NS) / (10 ^ 4) ' Divide to get milliseconds
+		    µs = (fileTime64 - EPOCH_DIFFERENCE_100NS) \ 10 ' Divide to get microseconds
 		    
 		  #ElseIf TargetMacOS or TargetIOS Or TargetLinux
 		    // --- macOS and Linux (POSIX) Implementation ---
@@ -58,39 +58,54 @@ Protected Module M_UUID
 		    #EndIf
 		    
 		    If apiResult = 0 Then // Function call succeeded
-		      ms = tv.tv_sec * 1000 + ( tv.tv_usec \ 1000 ) // Return milliseconds
+		      µs = tv.tv_sec * 1000000 + tv.tv_usec // Return microseconds
 		    End If
 		    
 		  #elseif TargetAndroid
+		    static counter as UInt64
+		    counter = counter + 1
+		    
 		    Declare Function currentTimeMillis_Android Lib "Runtime" _
 		    (className As String, methodName As String) As Int64
-		    ms = currentTimeMillis_Android("java/lang/System", "currentTimeMillis")
+		    µs = currentTimeMillis_Android("java/lang/System", "currentTimeMillis") * 1000 + counter
 		  #EndIf
 		  
 		  //
 		  // If we get here, the above didn't work
 		  //
-		  if ms = 0 then ms = DateTime.Now.SecondsFrom1970 * 1000.0
+		  if µs = 0 then 
+		    µs = DateTime.Now.SecondsFrom1970 * 1000000.0
+		  end
 		  
 		  //
 		  // Copy to the first 6 bytes
 		  // 
 		  const kShift2 as UInt64 = 256 * 256
+		  const kThousand as UInt64 = 1000
+		  
+		  var ms as UInt64 = µs \ kThousand
 		  
 		  ms = ms * kShift2
 		  uuid.UInt64Value( 0 ) = ms
 		  
-		  var mbRandom as MemoryBlock = Crypto.GenerateRandomBytes( 10 )
-		  
-		  uuid.CopyBytes mbRandom, 0, 10, 6
+		  //
+		  // Write the microseconds to the the 7th and 8th bytes
+		  // noting that the value will not take more than the 12 bits allowed
+		  //
+		  var remainingµs as UInt16 = µs mod kThousand
 		  
 		  //
-		  // Set the seventh byte to the version
+		  // We set the version here by flipping the first bits of the value
 		  //
-		  var value as byte = p.Byte( 6 )
-		  value = value and CType( &b00001111, Byte ) // Turn off the first four bits
-		  value = value or CType( &b01110000, Byte ) // Set to version 7
-		  p.Byte( 6 ) = value
+		  remainingµs = remainingµs or &b0111000000000000 //  Version 7
+		  
+		  uuid.UInt16Value( 6 ) = remainingµs
+		  
+		  var mbRandom as MemoryBlock = Crypto.GenerateRandomBytes( 8 )
+		  
+		  uuid.CopyBytes mbRandom, 0, 8, 8
+		  
+		  var value as byte
 		  
 		  //
 		  // Adjust ninth byte
@@ -101,8 +116,11 @@ Protected Module M_UUID
 		  p.Byte( 8 ) = value
 		  
 		  var result as string = EncodeHex( uuid )
-		  result = result.LeftBytes( 8 ) + "-" + result.MiddleBytes( 8, 4 ) + "-" + result.MiddleBytes( 12, 4 ) + "-" + result.MiddleBytes( 16, 4 ) + _
-		  "-" + result.RightBytes( 12 )
+		  result = result.LeftBytes( 8 ) + "-" + _
+		  result.MiddleBytes( 8, 4 ) + "-" + _
+		  result.MiddleBytes( 12, 4 ) + "-" + _
+		  result.MiddleBytes( 16, 4 ) + "-" + _
+		  result.RightBytes( 12 )
 		  
 		  return result
 		End Function
