@@ -1,5 +1,34 @@
 #tag Module
 Protected Module M_UUID
+	#tag Method, Flags = &h1, Description = 50756C6C7320746865206461746520616E642074696D652066726F6D2061205555494420762E373B2072657475726E73204E696C20666F72206F746865722076657273696F6E732E
+		Protected Function ExtractDateTime(uuid As String) As DateTime
+		  #if not DebugBuild
+		    #pragma BackgroundTasks false
+		  #endif
+		  #pragma BoundsChecking false
+		  #pragma NilObjectChecking false
+		  #pragma StackOverflowChecking false
+		  
+		  if Version( uuid ) <> 7 then
+		    return nil
+		  end if
+		  
+		  uuid = uuid.ReplaceAllBytes( "-", "" )
+		  
+		  var mb as MemoryBlock = DecodeHex( uuid )
+		  mb.LittleEndian = false
+		  
+		  const kShift2 as UInt64 = 256^2
+		  
+		  var ms as UInt64 = mb.UInt64Value( 0 ) \ kShift2
+		  var secs as double = ms / 1000.0
+		  
+		  var dt as new DateTime( secs )
+		  return dt
+		  
+		End Function
+	#tag EndMethod
+
 	#tag Method, Flags = &h1, Description = 47656E657261746564205555494420762E34202872616E646F6D206279746573292E
 		Protected Function GenerateV4() As String
 		  #if not DebugBuild

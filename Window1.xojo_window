@@ -234,8 +234,8 @@ End
 		  var sql as String = UUID7Generator.Get
 		  
 		  FldOut.AddText _
-		  "M_UUID: " + muuid + EndOfLine + _
-		  "SQLite: " + sql + EndOfLine + EndOfLine
+		  "M_UUID: " + muuid + " (" + M_UUID.ExtractDateTime( muuid ).SQLDateTime + ")" + EndOfLine + _
+		  "SQLite: " + sql +   " (" + M_UUID.ExtractDateTime(  sql  ).SQLDateTime + ")" + EndOfLine + EndOfLine
 		  
 		  if M_UUID.Version( muuid ) <> 7 then
 		    FldOut.AddText "M_UUID not valid" + EndOfLine + EndOfLine
@@ -244,6 +244,7 @@ End
 		  if M_UUID.Version( sql ) <> 7 then
 		    FldOut.AddText "SQL not valid" + EndOfLine + EndOfLine
 		  end if
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents
