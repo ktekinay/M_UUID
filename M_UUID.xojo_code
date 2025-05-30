@@ -61,11 +61,13 @@ Protected Module M_UUID
 		    
 		  #elseif TargetAndroid
 		    static counter as UInt64
-		    counter = counter + 1
 		    
 		    Declare Function currentTimeMillis_Android Lib "Runtime" _
 		    (className As String, methodName As String) As Int64
 		    µs = currentTimeMillis_Android("java/lang/System", "currentTimeMillis") * 1000 + counter
+		    
+		    counter = ( counter + 1 ) mod 1000
+		    
 		  #EndIf
 		  
 		  //
@@ -93,7 +95,8 @@ Protected Module M_UUID
 		  var remainingµs as UInt16 = µs mod kThousand
 		  
 		  //
-		  // We set the version here by flipping the first bits of the value
+		  // We set the version here by flipping the first bits of the value,
+		  // which works because we know the first byte will be 0
 		  //
 		  remainingµs = remainingµs or &b0111000000000000 //  Version 7
 		  
@@ -116,6 +119,7 @@ Protected Module M_UUID
 		  uuid.CopyBytes mbRandom, 0, kRandomCount, 16 - kRandomCount
 		  
 		  var result as string = EncodeHex( uuid )
+		  
 		  result = result.LeftBytes( 8 ) + "-" + _
 		  result.MiddleBytes( 8, 4 ) + "-" + _
 		  result.MiddleBytes( 12, 4 ) + "-" + _
