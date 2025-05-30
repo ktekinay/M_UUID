@@ -85,70 +85,9 @@ Protected Module M_UUID
 		  var uuid as new MemoryBlock( 16 )
 		  uuid.LittleEndian = false
 		  
-		  var µs as UInt64
+		  static offset as integer = ( DateTime.Now.SecondsFrom1970 * 1000000.0 ) - System.Microseconds
 		  
-		  #If TargetWindows
-		    // --- Windows Implementation ---
-		    // Uses GetSystemTimeAsFileTime to get time in FILETIME format
-		    // FILETIME is 100-nanosecond intervals since Jan 1, 1601 UTC
-		    
-		    Declare Sub GetSystemTimeAsFileTime Lib "kernel32" (ByRef lpFileTime As FILETIME)
-		    
-		    Var ft As FILETIME
-		    GetSystemTimeAsFileTime(ft)
-		    
-		    // Combine the two 32-bit parts into a 64-bit unsigned integer
-		    // Note: Xojo's UInt64 handles this correctly.
-		    Var fileTime64 As UInt64 = ft.dwHighDateTime
-		    fileTime64 = fileTime64 * &h100000000 + ft.dwLowDateTime // Combine high and low parts
-		    
-		    // Constant for the difference between Jan 1, 1970 (Unix epoch)
-		    // and Jan 1, 1601 (FILETIME epoch) in 100-nanosecond intervals.
-		    // This is 11644473600 seconds * 10,000,000 (100ns per second)
-		    Const EPOCH_DIFFERENCE_100NS As UInt64 = 116444736000000000
-		    
-		    // Subtract the epoch difference and convert to seconds
-		    µs = (fileTime64 - EPOCH_DIFFERENCE_100NS) \ 10 ' Divide to get microseconds
-		    
-		  #ElseIf TargetMacOS or TargetIOS Or TargetLinux
-		    // --- macOS and Linux (POSIX) Implementation ---
-		    // Uses gettimeofday to get seconds and microseconds since Unix epoch
-		    
-		    Var tv As timeval
-		    Var apiResult As Int32 // Stores the return value of gettimeofday
-		    
-		    #If TargetMacOS // macOS specific library
-		      Declare Function gettimeofday Lib "libc.dylib" (ByRef tv As timeval, tz As Ptr) As Int32
-		      apiResult = gettimeofday(tv, Nil) // Pass Nil for timezone argument (not usually needed)
-		    #ElseIf TargetIOS // iOS specific library
-		      Declare Function gettimeofday Lib "Foundation" (ByRef tv As timeval, tz As Ptr) As Int32
-		      apiResult = gettimeofday(tv, Nil) // Pass Nil for timezone argument (not usually needed)
-		    #ElseIf TargetLinux // Linux specific library (common for most distributions)
-		      Declare Function gettimeofday Lib "libc.so.6" (ByRef tv As timeval, tz As Ptr) As Int32
-		      apiResult = gettimeofday(tv, Nil) // Pass Nil for timezone argument
-		    #EndIf
-		    
-		    If apiResult = 0 Then // Function call succeeded
-		      µs = tv.tv_sec * 1000000 + tv.tv_usec // Return microseconds
-		    End If
-		    
-		  #elseif TargetAndroid
-		    static counter as UInt64
-		    
-		    Declare Function currentTimeMillis_Android Lib "Runtime" _
-		    (className As String, methodName As String) As Int64
-		    µs = currentTimeMillis_Android("java/lang/System", "currentTimeMillis") * 1000 + counter
-		    
-		    counter = ( counter + 1 ) mod 1000
-		    
-		  #EndIf
-		  
-		  //
-		  // If we get here, the above didn't work
-		  //
-		  if µs = 0 then 
-		    µs = DateTime.Now.SecondsFrom1970 * 1000000.0
-		  end
+		  var µs as UInt64 = System.Microseconds + offset
 		  
 		  //
 		  // Copy to the first 6 bytes
