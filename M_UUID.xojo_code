@@ -85,7 +85,7 @@ Protected Module M_UUID
 		  var uuid as new MemoryBlock( 16 )
 		  uuid.LittleEndian = false
 		  
-		  static offset as integer = ( DateTime.Now.SecondsFrom1970 * 1000000.0 ) - System.Microseconds
+		  static offset as double = ( DateTime.Now.SecondsFrom1970 * 1000000.0 ) - System.Microseconds
 		  
 		  var µs as UInt64 = System.Microseconds + offset
 		  
