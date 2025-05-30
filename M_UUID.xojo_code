@@ -12,8 +12,6 @@ Protected Module M_UUID
 		  var uuid as new MemoryBlock( 16 )
 		  uuid.LittleEndian = false
 		  
-		  var p as ptr = uuid
-		  
 		  var µs as UInt64
 		  
 		  #If TargetWindows
@@ -101,19 +99,21 @@ Protected Module M_UUID
 		  
 		  uuid.UInt16Value( 6 ) = remainingµs
 		  
-		  var mbRandom as MemoryBlock = Crypto.GenerateRandomBytes( 8 )
+		  const kRandomCount as integer = 8
 		  
-		  uuid.CopyBytes mbRandom, 0, 8, 8
-		  
-		  var value as byte
+		  var mbRandom as MemoryBlock = Crypto.GenerateRandomBytes( kRandomCount )
 		  
 		  //
-		  // Adjust ninth byte
+		  // Adjust the bits of the first byte (ultimately byte 9 of the UUID)
 		  //
-		  value = p.Byte( 8 )
+		  var p as ptr = mbRandom
+		  
+		  var value as byte = p.Byte( 0 )
 		  value = value and CType( &b00111111, Byte ) // Turn off the first two bits
 		  value = value or CType( &b10000000, Byte ) // Turn on the first bit
-		  p.Byte( 8 ) = value
+		  p.Byte( 0 ) = value
+		  
+		  uuid.CopyBytes mbRandom, 0, kRandomCount, 16 - kRandomCount
 		  
 		  var result as string = EncodeHex( uuid )
 		  result = result.LeftBytes( 8 ) + "-" + _
