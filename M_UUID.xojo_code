@@ -1,7 +1,7 @@
 #tag Module
 Protected Module M_UUID
-	#tag Method, Flags = &h1, Description = 50756C6C7320746865206461746520616E642074696D652066726F6D2061205555494420762E373B2072657475726E73204E696C20666F72206F746865722076657273696F6E732E
-		Protected Function ExtractDateTime(uuid As String) As DateTime
+	#tag Method, Flags = &h1, Description = 50756C6C7320746865206461746520616E642074696D652066726F6D2061205555494420762E373B2072657475726E73204E696C20666F72206F746865722076657273696F6E732E2052657475726E73206173206C6F63616C2054696D655A6F6E65206966206E6F6E652069732070726F76696465642E
+		Protected Function ExtractDateTime(uuid As String, tz As TimeZone = Nil) As DateTime
 		  #if not DebugBuild
 		    #pragma BackgroundTasks false
 		  #endif
@@ -23,7 +23,7 @@ Protected Module M_UUID
 		  var ms as UInt64 = mb.UInt64Value( 0 ) \ kShift2
 		  var secs as double = ms / 1000.0
 		  
-		  var dt as new DateTime( secs )
+		  var dt as new DateTime( secs, tz )
 		  return dt
 		  
 		End Function
