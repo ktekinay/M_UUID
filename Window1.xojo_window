@@ -236,6 +236,14 @@ End
 		  FldOut.AddText _
 		  "M_UUID: " + muuid + EndOfLine + _
 		  "SQLite: " + sql + EndOfLine + EndOfLine
+		  
+		  if M_UUID.Version( muuid ) <> 7 then
+		    FldOut.AddText "M_UUID not valid" + EndOfLine + EndOfLine
+		  end if
+		  
+		  if M_UUID.Version( sql ) <> 7 then
+		    FldOut.AddText "SQL not valid" + EndOfLine + EndOfLine
+		  end if
 		End Sub
 	#tag EndEvent
 #tag EndEvents
@@ -271,6 +279,11 @@ End
 		  
 		  FldOut.AddText _
 		  "M_UUID 4: " + muuid + EndOfLine + EndOfLine
+		  
+		  if M_UUID.Version( muuid ) <> 4 then
+		    FldOut.AddText "M_UUID not valid" + EndOfLine + EndOfLine
+		  end if
+		  
 		End Sub
 	#tag EndEvent
 #tag EndEvents

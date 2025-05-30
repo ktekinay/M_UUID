@@ -1,6 +1,6 @@
 #tag Module
 Protected Module M_UUID
-	#tag Method, Flags = &h1, Description = 47656E657261746564205555494420762E34202872616E646F6D20627974657329
+	#tag Method, Flags = &h1, Description = 47656E657261746564205555494420762E34202872616E646F6D206279746573292E
 		Protected Function GenerateV4() As String
 		  #if not DebugBuild
 		    #pragma BackgroundTasks false
@@ -44,7 +44,7 @@ Protected Module M_UUID
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1, Description = 47656E657261746573205555494420762E37202863757272656E74206461746520616E642074696D65206173206D6963726F7365636F6E647320706C75732072616E646F6D20627974657329
+	#tag Method, Flags = &h1, Description = 47656E657261746573205555494420762E37202863757272656E74206461746520616E642074696D65206173206D6963726F7365636F6E647320706C75732072616E646F6D206279746573292E
 		Protected Function GenerateV7() As String
 		  #if not DebugBuild
 		    #pragma BackgroundTasks false
@@ -173,6 +173,44 @@ Protected Module M_UUID
 		  return result
 		End Function
 	#tag EndMethod
+
+	#tag Method, Flags = &h1, Description = 52657475726E7320547275652069662074686520555549442069732076616C69642E
+		Protected Function IsValid(uuid As String) As Boolean
+		  return Version( uuid ) <> kNotValid
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1, Description = 52657475726E73207468652076657273696F6E206F6620612076616C696420555549442C206F72202D31206966206E6F742076616C69642E
+		Protected Function Version(uuid As String) As Integer
+		  #if not DebugBuild
+		    #pragma BackgroundTasks false
+		  #endif
+		  #pragma BoundsChecking false
+		  #pragma NilObjectChecking false
+		  #pragma StackOverflowChecking false
+		  
+		  var validator as new RegEx
+		  validator.SearchPattern = kValidatorPattern
+		  
+		  var match as RegExMatch = validator.Search( uuid )
+		  
+		  if match is nil then
+		    return kNotValid
+		  end if
+		  
+		  var version as integer = match.SubExpressionString( 1 ).ToInteger
+		  return version
+		  
+		End Function
+	#tag EndMethod
+
+
+	#tag Constant, Name = kNotValid, Type = Double, Dynamic = False, Default = \"-1", Scope = Private
+	#tag EndConstant
+
+	#tag Constant, Name = kValidatorPattern, Type = String, Dynamic = False, Default = \"(\?x)\n\n\\A\n\n(\?|\n  [[:xdigit:]]{12}\n  ([12345678]) # version\n  [[:xdigit:]]{3}\n  [89AB] [[:xdigit:]]{15}\n  |\n  [[:xdigit:]]{8} - \n  [[:xdigit:]]{4} - \n  ([12345678]) # version\n  [[:xdigit:]]{3} - \n  [89AB][[:xdigit:]]{3} - \n  [[:xdigit:]]{12}\n)\n\n\\z", Scope = Private
+	#tag EndConstant
 
 
 	#tag Structure, Name = FILETIME, Flags = &h21
