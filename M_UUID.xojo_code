@@ -1,6 +1,50 @@
 #tag Module
 Protected Module M_UUID
-	#tag Method, Flags = &h1
+	#tag Method, Flags = &h1, Description = 47656E657261746564205555494420762E34202872616E646F6D20627974657329
+		Protected Function GenerateV4() As String
+		  #if not DebugBuild
+		    #pragma BackgroundTasks false
+		  #endif
+		  #pragma BoundsChecking false
+		  #pragma NilObjectChecking false
+		  #pragma StackOverflowChecking false
+		  
+		  var uuid as MemoryBlock = Crypto.GenerateRandomBytes( 16 )
+		  
+		  var p as ptr = uuid
+		  
+		  var value as byte
+		  
+		  //
+		  // Set the version in byte 7
+		  //
+		  value = p.Byte( 6 )
+		  value = value and CType( &b00001111, Byte ) // Turn off first bits
+		  value = value or CType( &b01000000, Byte ) // Set to 4
+		  p.Byte( 6 ) = value
+		  
+		  //
+		  // Set the first bit of byte 9
+		  //
+		  value = p.Byte( 8 )
+		  value = value and CType( &b00111111, Byte ) // Turn off first bits
+		  value = value or CType( &b10000000, Byte ) // Turn on first bit
+		  p.Byte( 8 ) = value
+		  
+		  var result as string = EncodeHex( uuid )
+		  
+		  result = result.LeftBytes( 8 ) + "-" + _
+		  result.MiddleBytes( 8, 4 ) + "-" + _
+		  result.MiddleBytes( 12, 4 ) + "-" + _
+		  result.MiddleBytes( 16, 4 ) + "-" + _
+		  result.RightBytes( 12 )
+		  
+		  return result
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1, Description = 47656E657261746573205555494420762E37202863757272656E74206461746520616E642074696D65206173206D6963726F7365636F6E647320706C75732072616E646F6D20627974657329
 		Protected Function GenerateV7() As String
 		  #if not DebugBuild
 		    #pragma BackgroundTasks false

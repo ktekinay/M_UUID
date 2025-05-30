@@ -25,11 +25,11 @@ Begin DesktopWindow Window1
    Type            =   0
    Visible         =   True
    Width           =   600
-   Begin DesktopButton BtnTest
+   Begin DesktopButton BtnTest7
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
-      Caption         =   "Test"
+      Caption         =   "Test 7"
       Default         =   False
       Enabled         =   True
       FontName        =   "System"
@@ -56,11 +56,11 @@ Begin DesktopWindow Window1
       Visible         =   True
       Width           =   80
    End
-   Begin DesktopButton BtnSingle
+   Begin DesktopButton BtnSingle7
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
-      Caption         =   "Single"
+      Caption         =   "Single 7"
       Default         =   False
       Enabled         =   True
       FontName        =   "System"
@@ -87,11 +87,11 @@ Begin DesktopWindow Window1
       Visible         =   True
       Width           =   80
    End
-   Begin DesktopButton BtnTestA
+   Begin DesktopButton BtnTestA7
       AllowAutoDeactivate=   True
       Bold            =   False
       Cancel          =   False
-      Caption         =   "Test A"
+      Caption         =   "Test A 7"
       Default         =   False
       Enabled         =   True
       FontName        =   "System"
@@ -165,13 +165,44 @@ Begin DesktopWindow Window1
       Visible         =   True
       Width           =   560
    End
+   Begin DesktopButton BtnSingle4
+      AllowAutoDeactivate=   True
+      Bold            =   False
+      Cancel          =   False
+      Caption         =   "Single 4"
+      Default         =   False
+      Enabled         =   True
+      FontName        =   "System"
+      FontSize        =   0.0
+      FontUnit        =   0
+      Height          =   20
+      Index           =   -2147483648
+      Italic          =   False
+      Left            =   20
+      LockBottom      =   False
+      LockedInPosition=   False
+      LockLeft        =   True
+      LockRight       =   False
+      LockTop         =   True
+      MacButtonStyle  =   0
+      Scope           =   2
+      TabIndex        =   4
+      TabPanelIndex   =   0
+      TabStop         =   True
+      Tooltip         =   ""
+      Top             =   52
+      Transparent     =   False
+      Underline       =   False
+      Visible         =   True
+      Width           =   80
+   End
 End
 #tag EndDesktopWindow
 
 #tag WindowCode
 #tag EndWindowCode
 
-#tag Events BtnTest
+#tag Events BtnTest7
 	#tag Event
 		Sub Pressed()
 		  #if not DebugBuild
@@ -196,7 +227,7 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events BtnSingle
+#tag Events BtnSingle7
 	#tag Event
 		Sub Pressed()
 		  var muuid as String = M_UUID.GenerateV7
@@ -208,7 +239,7 @@ End
 		End Sub
 	#tag EndEvent
 #tag EndEvents
-#tag Events BtnTestA
+#tag Events BtnTestA7
 	#tag Event
 		Sub Pressed()
 		  #if not DebugBuild
@@ -230,6 +261,16 @@ End
 		  MessageBox sw.ElapsedSeconds.ToString( "#,##0.00" )
 		  
 		  return
+		End Sub
+	#tag EndEvent
+#tag EndEvents
+#tag Events BtnSingle4
+	#tag Event
+		Sub Pressed()
+		  var muuid as String = M_UUID.GenerateV4
+		  
+		  FldOut.AddText _
+		  "M_UUID 4: " + muuid + EndOfLine + EndOfLine
 		End Sub
 	#tag EndEvent
 #tag EndEvents
