@@ -20,6 +20,19 @@ Inherits TestGroup
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub ExtractVersionTest()
+		  Assert.AreEqual 4, M_UUID.ExtractVersion( "01973223-59cd-43b1-9f91-917fb8af9cc7" )
+		  Assert.AreEqual 7, M_UUID.ExtractVersion( "01973223-59cd-73b1-9f91-917fb8af9cc7" )
+		  
+		  Assert.AreEqual 4, M_UUID.ExtractVersion( M_UUID.GenerateV4() )
+		  Assert.AreEqual 7, M_UUID.ExtractVersion( M_UUID.GenerateV7() )
+		  
+		  Assert.AreEqual -1, M_UUID.ExtractVersion( "01973223-59cd-03b1-9f91-917fb8af9cc7" )
+		  
+		End Sub
+	#tag EndMethod
+
 	#tag DelegateDeclaration, Flags = &h21
 		Private Delegate Function GenerateDelegate(withHyphens As Boolean = True) As String
 	#tag EndDelegateDeclaration
@@ -136,19 +149,128 @@ Inherits TestGroup
 		End Sub
 	#tag EndMethod
 
-	#tag Method, Flags = &h0
-		Sub VersionTest()
-		  Assert.AreEqual 4, M_UUID.Version( "01973223-59cd-43b1-9f91-917fb8af9cc7" )
-		  Assert.AreEqual 7, M_UUID.Version( "01973223-59cd-73b1-9f91-917fb8af9cc7" )
-		  
-		  Assert.AreEqual 4, M_UUID.Version( M_UUID.GenerateV4() )
-		  Assert.AreEqual 7, M_UUID.Version( M_UUID.GenerateV7() )
-		  
-		  Assert.AreEqual -1, M_UUID.Version( "01973223-59cd-03b1-9f91-917fb8af9cc7" )
-		  
-		End Sub
-	#tag EndMethod
 
-
+	#tag ViewBehavior
+		#tag ViewProperty
+			Name="Duration"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Double"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="FailedTestCount"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="IncludeGroup"
+			Visible=false
+			Group="Behavior"
+			InitialValue="True"
+			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Index"
+			Visible=true
+			Group="ID"
+			InitialValue="-2147483648"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="IsRunning"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Left"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Name"
+			Visible=true
+			Group="ID"
+			InitialValue=""
+			Type="String"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="NotImplementedCount"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="PassedTestCount"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="RunTestCount"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="SkippedTestCount"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="StopTestOnFail"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Boolean"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Super"
+			Visible=true
+			Group="ID"
+			InitialValue=""
+			Type="String"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="TestCount"
+			Visible=false
+			Group="Behavior"
+			InitialValue=""
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+		#tag ViewProperty
+			Name="Top"
+			Visible=true
+			Group="Position"
+			InitialValue="0"
+			Type="Integer"
+			EditorType=""
+		#tag EndViewProperty
+	#tag EndViewBehavior
 End Class
 #tag EndClass

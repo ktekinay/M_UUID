@@ -9,7 +9,7 @@ Protected Module M_UUID
 		  #pragma NilObjectChecking false
 		  #pragma StackOverflowChecking false
 		  
-		  if Version( uuid ) <> 7 then
+		  if ExtractVersion( uuid ) <> 7 then
 		    return nil
 		  end if
 		  
@@ -25,6 +25,30 @@ Protected Module M_UUID
 		  
 		  var dt as new DateTime( secs, tz )
 		  return dt
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1, Description = 52657475726E73207468652076657273696F6E206F6620612076616C696420555549442C206F72202D31206966206E6F742076616C69642E
+		Protected Function ExtractVersion(uuid As String) As Integer
+		  #if not DebugBuild
+		    #pragma BackgroundTasks false
+		  #endif
+		  #pragma BoundsChecking false
+		  #pragma NilObjectChecking false
+		  #pragma StackOverflowChecking false
+		  
+		  var validator as new RegEx
+		  validator.SearchPattern = kValidatorPattern
+		  
+		  var match as RegExMatch = validator.Search( uuid )
+		  
+		  if match is nil then
+		    return kNotValid
+		  end if
+		  
+		  var version as integer = match.SubExpressionString( 1 ).ToInteger
+		  return version
 		  
 		End Function
 	#tag EndMethod
@@ -149,31 +173,7 @@ Protected Module M_UUID
 
 	#tag Method, Flags = &h1, Description = 52657475726E7320547275652069662074686520555549442069732076616C696420696E20666F726D2E
 		Protected Function IsValid(uuid As String) As Boolean
-		  return Version( uuid ) <> kNotValid
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1, Description = 52657475726E73207468652076657273696F6E206F6620612076616C696420555549442C206F72202D31206966206E6F742076616C69642E
-		Protected Function Version(uuid As String) As Integer
-		  #if not DebugBuild
-		    #pragma BackgroundTasks false
-		  #endif
-		  #pragma BoundsChecking false
-		  #pragma NilObjectChecking false
-		  #pragma StackOverflowChecking false
-		  
-		  var validator as new RegEx
-		  validator.SearchPattern = kValidatorPattern
-		  
-		  var match as RegExMatch = validator.Search( uuid )
-		  
-		  if match is nil then
-		    return kNotValid
-		  end if
-		  
-		  var version as integer = match.SubExpressionString( 1 ).ToInteger
-		  return version
+		  return ExtractVersion( uuid ) <> kNotValid
 		  
 		End Function
 	#tag EndMethod
