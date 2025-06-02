@@ -34,7 +34,7 @@ Inherits TestGroup
 	#tag EndMethod
 
 	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function GenerateDelegate(withHyphens As Boolean = True) As String
+		Private Delegate Function GenerateDelegate(withHyphens As Boolean) As String
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
