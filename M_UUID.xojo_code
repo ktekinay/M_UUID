@@ -9,7 +9,7 @@ Protected Module M_UUID
 		  #pragma NilObjectChecking false
 		  #pragma StackOverflowChecking false
 		  
-		  if Version( uuid ) <> 7 then
+		  if ExtractVersion( uuid ) <> 7 then
 		    return nil
 		  end if
 		  
@@ -29,8 +29,32 @@ Protected Module M_UUID
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1, Description = 47656E657261746564205555494420762E34202872616E646F6D206279746573292E
-		Protected Function GenerateV4() As String
+	#tag Method, Flags = &h1, Description = 52657475726E73207468652076657273696F6E206F6620612076616C696420555549442C206F72202D31206966206E6F742076616C69642E
+		Protected Function ExtractVersion(uuid As String) As Integer
+		  #if not DebugBuild
+		    #pragma BackgroundTasks false
+		  #endif
+		  #pragma BoundsChecking false
+		  #pragma NilObjectChecking false
+		  #pragma StackOverflowChecking false
+		  
+		  var validator as new RegEx
+		  validator.SearchPattern = kValidatorPattern
+		  
+		  var match as RegExMatch = validator.Search( uuid )
+		  
+		  if match is nil then
+		    return kNotValid
+		  end if
+		  
+		  var version as integer = match.SubExpressionString( 1 ).ToInteger
+		  return version
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1, Description = 47656E657261746573205555494420762E34202872616E646F6D206279746573292E
+		Protected Function GenerateV4(withHyphens As Boolean = True) As String
 		  #if not DebugBuild
 		    #pragma BackgroundTasks false
 		  #endif
@@ -62,19 +86,21 @@ Protected Module M_UUID
 		  
 		  var result as string = EncodeHex( uuid )
 		  
-		  result = result.LeftBytes( 8 ) + "-" + _
-		  result.MiddleBytes( 8, 4 ) + "-" + _
-		  result.MiddleBytes( 12, 4 ) + "-" + _
-		  result.MiddleBytes( 16, 4 ) + "-" + _
-		  result.RightBytes( 12 )
+		  if withHyphens then
+		    result = result.LeftBytes( 8 ) + "-" + _
+		    result.MiddleBytes( 8, 4 ) + "-" + _
+		    result.MiddleBytes( 12, 4 ) + "-" + _
+		    result.MiddleBytes( 16, 4 ) + "-" + _
+		    result.RightBytes( 12 )
+		  end if
 		  
 		  return result
 		  
 		End Function
 	#tag EndMethod
 
-	#tag Method, Flags = &h1, Description = 47656E657261746573205555494420762E37202863757272656E74206461746520616E642074696D65206173206D6963726F7365636F6E647320706C75732072616E646F6D206279746573292E
-		Protected Function GenerateV7() As String
+	#tag Method, Flags = &h1, Description = 47656E65726174657320736F727461626C65205555494420762E37202863757272656E74206461746520616E642074696D65206173206D6963726F7365636F6E647320706C75732072616E646F6D206279746573292E
+		Protected Function GenerateV7(withHyphens As Boolean = True) As String
 		  #if not DebugBuild
 		    #pragma BackgroundTasks false
 		  #endif
@@ -132,43 +158,22 @@ Protected Module M_UUID
 		  
 		  var result as string = EncodeHex( uuid )
 		  
-		  result = result.LeftBytes( 8 ) + "-" + _
-		  result.MiddleBytes( 8, 4 ) + "-" + _
-		  result.MiddleBytes( 12, 4 ) + "-" + _
-		  result.MiddleBytes( 16, 4 ) + "-" + _
-		  result.RightBytes( 12 )
-		  
-		  return result
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1, Description = 52657475726E7320547275652069662074686520555549442069732076616C69642E
-		Protected Function IsValid(uuid As String) As Boolean
-		  return Version( uuid ) <> kNotValid
-		  
-		End Function
-	#tag EndMethod
-
-	#tag Method, Flags = &h1, Description = 52657475726E73207468652076657273696F6E206F6620612076616C696420555549442C206F72202D31206966206E6F742076616C69642E
-		Protected Function Version(uuid As String) As Integer
-		  #if not DebugBuild
-		    #pragma BackgroundTasks false
-		  #endif
-		  #pragma BoundsChecking false
-		  #pragma NilObjectChecking false
-		  #pragma StackOverflowChecking false
-		  
-		  var validator as new RegEx
-		  validator.SearchPattern = kValidatorPattern
-		  
-		  var match as RegExMatch = validator.Search( uuid )
-		  
-		  if match is nil then
-		    return kNotValid
+		  if withHyphens then
+		    result = result.LeftBytes( 8 ) + "-" + _
+		    result.MiddleBytes( 8, 4 ) + "-" + _
+		    result.MiddleBytes( 12, 4 ) + "-" + _
+		    result.MiddleBytes( 16, 4 ) + "-" + _
+		    result.RightBytes( 12 )
 		  end if
 		  
-		  var version as integer = match.SubExpressionString( 1 ).ToInteger
-		  return version
+		  return result
+		  
+		End Function
+	#tag EndMethod
+
+	#tag Method, Flags = &h1, Description = 52657475726E7320547275652069662074686520555549442069732076616C696420696E20666F726D2E
+		Protected Function IsValid(uuid As String) As Boolean
+		  return ExtractVersion( uuid ) <> kNotValid
 		  
 		End Function
 	#tag EndMethod
@@ -180,16 +185,8 @@ Protected Module M_UUID
 	#tag Constant, Name = kValidatorPattern, Type = String, Dynamic = False, Default = \"(\?x)\n\n\\A\n\n(\?|\n  [[:xdigit:]]{12}\n  ([12345678]) # version\n  [[:xdigit:]]{3}\n  [89AB] [[:xdigit:]]{15}\n  |\n  [[:xdigit:]]{8} - \n  [[:xdigit:]]{4} - \n  ([12345678]) # version\n  [[:xdigit:]]{3} - \n  [89AB][[:xdigit:]]{3} - \n  [[:xdigit:]]{12}\n)\n\n\\z", Scope = Private
 	#tag EndConstant
 
-
-	#tag Structure, Name = FILETIME, Flags = &h21
-		dwLowDateTime As UInt32
-		dwHighDateTime As UInt32
-	#tag EndStructure
-
-	#tag Structure, Name = timeval, Flags = &h21
-		tv_sec As Int64   // seconds (typically time_t, which is Int64 on 64-bit systems)
-		tv_usec As Int32  // microseconds
-	#tag EndStructure
+	#tag Constant, Name = kVersion, Type = String, Dynamic = False, Default = \"1.0", Scope = Protected
+	#tag EndConstant
 
 
 	#tag ViewBehavior
