@@ -4,7 +4,7 @@ A UUID module for Xojo.
 
 ## Usage
 
-Open the Harness project and copy the M_UUID module to your project.
+Open the Harness project and copy the M_UUID module to your project. Do __not__ drag the module directly from disk to your project.
 
 ## Features
 
