@@ -111,9 +111,8 @@ Protected Module M_UUID
 		  var uuid as new MemoryBlock( 16 )
 		  uuid.LittleEndian = false
 		  
-		  static offset as double = ( DateTime.Now.SecondsFrom1970 * 1000000.0 ) - System.Microseconds
-		  
-		  var µs as UInt64 = System.Microseconds + offset
+		  var now as DateTime = DateTime.Now
+		  var µs as UInt64 = now.SecondsFrom1970 * 1000000.0
 		  
 		  //
 		  // Copy to the first 6 bytes
