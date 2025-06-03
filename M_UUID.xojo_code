@@ -27,9 +27,11 @@ Protected Module M_UUID
 		  // the tail end of bytes 7 and 8
 		  //
 		  
-		  var µs as UInt64 = mb.UInt16Value( 6 ) and CType( &b0000111111111111, UInt64 )
+		  var encodedµs as UInt64 = mb.UInt16Value( 6 ) and CType( &b0000111111111111, UInt64 )
 		  
 		  const kThousand as UInt64 = 1000
+		  
+		  var µs as UInt64 = encodedµs * kThousand / CType( 4096, UInt64 )
 		  
 		  if µs >= kThousand then
 		    //
@@ -126,6 +128,12 @@ Protected Module M_UUID
 		  #pragma NilObjectChecking false
 		  #pragma StackOverflowChecking false
 		  
+		  //
+		  // See RFC-9562
+		  //
+		  // https://www.rfc-editor.org/rfc/rfc9562.html
+		  //
+		  
 		  var uuid as new MemoryBlock( 16 )
 		  uuid.LittleEndian = false
 		  
@@ -145,17 +153,20 @@ Protected Module M_UUID
 		  
 		  //
 		  // Write the microseconds to the the 7th and 8th bytes
-		  // noting that the value will not take more than the 12 bits allowed
+		  // noting that the value will not take more than the 12 bits allowed;
+		  // we use the recommendation of the RFC to encode the value as a fraction
+		  // of 4,096 thus stretching it out further, potentially to 12 bits
 		  //
 		  var remainingµs as UInt16 = µs mod kThousand
+		  var encodedµs as UInt64 = remainingµs * CType( 4096, UInt64 ) \ kThousand
 		  
 		  //
 		  // We set the version here by flipping the first bits of the value,
 		  // which works because we know the first byte will be 0
 		  //
-		  remainingµs = remainingµs or &b0111000000000000 //  Version 7
+		  encodedµs = encodedµs or &b0111000000000000 //  Version 7
 		  
-		  uuid.UInt16Value( 6 ) = remainingµs
+		  uuid.UInt16Value( 6 ) = encodedµs
 		  
 		  const kRandomCount as integer = 8
 		  
