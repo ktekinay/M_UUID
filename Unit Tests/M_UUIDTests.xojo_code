@@ -104,6 +104,20 @@ Inherits TestGroup
 		End Sub
 	#tag EndMethod
 
+	#tag Method, Flags = &h0
+		Sub V7SortabilityTest()
+		  var lastUUID as string = M_UUID.GenerateV7()
+		  
+		  for i as integer = 1 to 10000
+		    var uuid as string = M_UUID.GenerateV7()
+		    
+		    Assert.IsTrue lastUUID < uuid, lastUUID + " ≥ " + uuid
+		    
+		    lastUUID = uuid
+		  next
+		End Sub
+	#tag EndMethod
+
 	#tag Method, Flags = &h21
 		Private Sub ValidatePattern(uuid As String)
 		  var validator as new RegEx

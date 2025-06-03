@@ -35,7 +35,7 @@ Inherits TestGroup
 	#tag EndMethod
 
 
-	#tag Constant, Name = kCount, Type = Double, Dynamic = False, Default = \"100000", Scope = Private
+	#tag Constant, Name = kCount, Type = Double, Dynamic = False, Default = \"500000", Scope = Private
 	#tag EndConstant
 
 
