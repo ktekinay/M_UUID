@@ -2,29 +2,32 @@
 Protected Class TimingTests
 Inherits TestGroup
 	#tag Method, Flags = &h0
-		Sub GenerateV4Test()
-		  self.StartTestTimer
-		  
-		  for i as integer = 1 to kCount
-		    call M_UUID.GenerateV4()
-		  next
-		  
-		  self.LogTestTimer
-		  
-		  Assert.Pass
-		  
+		Sub GenerateV4InBulkTest()
+		  TimeBulk AddressOf M_UUID.GenerateV4
 		End Sub
 	#tag EndMethod
 
 	#tag Method, Flags = &h0
-		Sub GenerateV7Test()
-		  self.StartTestTimer
+		Sub GenerateV7InBulkTest()
+		  TimeBulk AddressOf M_UUID.GenerateV7
+		End Sub
+	#tag EndMethod
+
+	#tag Method, Flags = &h21
+		Private Sub TimeBulk(f As M_UUIDTests.GenerateDelegate)
+		  var sw as new Stopwatch_MTC
 		  
 		  for i as integer = 1 to kCount
-		    call M_UUID.GenerateV7()
+		    sw.Start
+		    call f.Invoke( true )
+		    sw.Stop
 		  next
 		  
-		  self.LogTestTimer
+		  var elapsed as double = sw.ElapsedSeconds
+		  var avgµs as double = elapsed / kCount * 1000000.0
+		  
+		  Assert.Message "Generating " + kCount.ToString( "#,##0" ) + " UUID's took " + elapsed.ToString( "#,##0.0" ) + " s"
+		  Assert.Message "at an average of " + avgµs.ToString( "#,##0.0" ) + " µs"
 		  
 		  Assert.Pass
 		  

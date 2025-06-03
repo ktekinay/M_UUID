@@ -33,8 +33,8 @@ Inherits TestGroup
 		End Sub
 	#tag EndMethod
 
-	#tag DelegateDeclaration, Flags = &h21
-		Private Delegate Function GenerateDelegate(withHyphens As Boolean) As String
+	#tag DelegateDeclaration, Flags = &h0
+		Delegate Function GenerateDelegate(withHyphens As Boolean) As String
 	#tag EndDelegateDeclaration
 
 	#tag Method, Flags = &h0
