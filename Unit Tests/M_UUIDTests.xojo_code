@@ -7,10 +7,23 @@ Inherits TestGroup
 		  var actual as DateTime = M_UUID.ExtractDateTime( M_UUID.GenerateV7( false ) )
 		  var diff as DateInterval = actual - now
 		  
+		  Assert.IsTrue actual > now
 		  Assert.AreEqual 0, diff.Days
 		  Assert.AreEqual 0, diff.Hours
 		  Assert.AreEqual 0, diff.Minutes
 		  Assert.AreEqual 0, diff.Seconds
+		  Assert.IsTrue abs( diff.Nanoseconds ) < 100000, diff.Nanoseconds.ToString( "#,##0" )
+		  
+		  now = DateTime.Now
+		  actual = M_UUID.ExtractDateTime( M_UUID.GenerateV7( true ) )
+		  diff = now - actual
+		  
+		  Assert.IsTrue actual > now
+		  Assert.AreEqual 0, diff.Days
+		  Assert.AreEqual 0, diff.Hours
+		  Assert.AreEqual 0, diff.Minutes
+		  Assert.AreEqual 0, diff.Seconds
+		  Assert.IsTrue abs( diff.Nanoseconds ) < 100000, diff.Nanoseconds.ToString( "#,##0" )
 		  
 		  actual = M_UUID.ExtractDateTime( "01973223-59cd-73b1-9f91-917fb8af9cc7", new TimeZone( 0 ) )
 		  Assert.AreEqual "2025-06-02 19:34", actual.SQLDateTime.Left( 16 )
