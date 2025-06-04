@@ -162,7 +162,7 @@ Protected Module M_UUID
 		  
 		  //
 		  // We set the version here by flipping the first bits of the value,
-		  // which works because we know the first byte will be 0
+		  // which works because we know the first nibble will be &b0000
 		  //
 		  encodedµs = encodedµs or &b0111000000000000 //  Version 7
 		  
