@@ -24,10 +24,10 @@ Inherits TestGroup
 		  next
 		  
 		  var elapsed as double = sw.ElapsedSeconds
-		  var avgµs as double = elapsed / kCount * 1000000.0
+		  var avgus as double = elapsed / kCount * 1000000.0
 		  
 		  Assert.Message "Generating " + kCount.ToString( "#,##0" ) + " UUID's took " + elapsed.ToString( "#,##0.0" ) + " s"
-		  Assert.Message "at an average of " + avgµs.ToString( "#,##0.0" ) + " µs"
+		  Assert.Message "at an average of " + avgus.ToString( "#,##0.0" ) + " µs"
 		  
 		  Assert.Pass
 		  

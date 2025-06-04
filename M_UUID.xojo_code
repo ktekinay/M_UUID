@@ -27,21 +27,21 @@ Protected Module M_UUID
 		  // the tail end of bytes 7 and 8
 		  //
 		  
-		  var encodedµs as UInt64 = mb.UInt16Value( 6 ) and CType( &b0000111111111111, UInt64 )
+		  var encodedus as UInt64 = mb.UInt16Value( 6 ) and CType( &b0000111111111111, UInt64 )
 		  
 		  const kThousand as UInt64 = 1000
 		  
-		  var µs as UInt64 = encodedµs * kThousand / CType( 4096, UInt64 )
+		  var us as UInt64 = encodedus * kThousand / CType( 4096, UInt64 )
 		  
-		  if µs >= kThousand then
+		  if us >= kThousand then
 		    //
 		    // Can't be a valid value
 		    // so we will ignore it
 		    //
-		    µs = 0
+		    us = 0
 		  end if
 		  
-		  var secs as double = ( ms / 1000.0 ) + ( µs / 1000000.0 )
+		  var secs as double = ( ms / 1000.0 ) + ( us / 1000000.0 )
 		  
 		  var dt as new DateTime( secs, tz )
 		  return dt
@@ -84,7 +84,11 @@ Protected Module M_UUID
 		  
 		  var uuid as MemoryBlock = Crypto.GenerateRandomBytes( 16 )
 		  
-		  var p as ptr = uuid
+		  #if TargetAndroid
+		    var p as MemoryBlock = uuid
+		  #else
+		    var p as ptr = uuid
+		  #endif
 		  
 		  var value as byte
 		  
@@ -138,7 +142,7 @@ Protected Module M_UUID
 		  uuid.LittleEndian = false
 		  
 		  var now as DateTime = DateTime.Now
-		  var µs as UInt64 = now.SecondsFrom1970 * 1000000.0
+		  var us as UInt64 = now.SecondsFrom1970 * 1000000.0
 		  
 		  //
 		  // Copy to the first 6 bytes
@@ -146,7 +150,7 @@ Protected Module M_UUID
 		  const kShift2 as UInt64 = 256 * 256
 		  const kThousand as UInt64 = 1000
 		  
-		  var ms as UInt64 = µs \ kThousand
+		  var ms as UInt64 = us \ kThousand
 		  
 		  ms = ms * kShift2
 		  uuid.UInt64Value( 0 ) = ms
@@ -157,16 +161,16 @@ Protected Module M_UUID
 		  // we use the recommendation of the RFC to encode the value as a fraction
 		  // of 4,096 thus stretching it out further, potentially to 12 bits
 		  //
-		  var remainingµs as UInt16 = µs mod kThousand
-		  var encodedµs as UInt64 = remainingµs * CType( 4096, UInt64 ) \ kThousand
+		  var remainingus as UInt16 = us mod kThousand
+		  var encodedus as UInt64 = remainingus * CType( 4096, UInt64 ) \ kThousand
 		  
 		  //
 		  // We set the version here by flipping the first bits of the value,
 		  // which works because we know the first nibble will be &b0000
 		  //
-		  encodedµs = encodedµs or &b0111000000000000 //  Version 7
+		  encodedus = encodedus or &b0111000000000000 //  Version 7
 		  
-		  uuid.UInt16Value( 6 ) = encodedµs
+		  uuid.UInt16Value( 6 ) = encodedus
 		  
 		  //
 		  // The remaining bytes will be the "var" (&b10) plus
@@ -179,7 +183,11 @@ Protected Module M_UUID
 		  //
 		  // Adjust the bits of the first byte (ultimately byte 9 of the UUID)
 		  //
-		  var p as ptr = mbRandom
+		  #if TargetAndroid
+		    var p as MemoryBlock = mbRandom
+		  #else
+		    var p as ptr = mbRandom
+		  #endif
 		  
 		  var value as byte = p.Byte( 0 )
 		  value = value and CType( &b00111111, Byte ) // Turn off the first two bits
