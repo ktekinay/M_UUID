@@ -4,7 +4,7 @@ A UUID module for Xojo.
 
 ## Usage
 
-Open the Harness project and copy the M_UUID module to your project. Do __not__ drag the module directly from disk to your project.
+Open the Harness project and copy the `M_UUID` module to your project. Do __not__ drag the module directly from disk to your project.
 
 ## Features
 
@@ -16,6 +16,6 @@ Created by Kem Tekinay (ktekinay at mactechnologies dot com) with help from Anth
 
 ## Release Notes
 
-### 1.0 (June 3, 2025)
+### 1.0 (June 4, 2025)
 
 - Initial release.
