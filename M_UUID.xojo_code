@@ -168,6 +168,10 @@ Protected Module M_UUID
 		  
 		  uuid.UInt16Value( 6 ) = encodedµs
 		  
+		  //
+		  // The remaining bytes will be the "var" (&b10) plus
+		  // 62 bits of random data
+		  //
 		  const kRandomCount as integer = 8
 		  
 		  var mbRandom as MemoryBlock = Crypto.GenerateRandomBytes( kRandomCount )
