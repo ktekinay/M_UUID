@@ -16,6 +16,11 @@ Created by Kem Tekinay (ktekinay at mactechnologies dot com) with help from Anth
 
 ## Release Notes
 
+### 1.1 (June 6, 2025)
+
+- Updates for Android (will require an update to Xojo).
+- Better encoding of DateTime in a UUID v.7.
+
 ### 1.0 (June 4, 2025)
 
 - Initial release.
