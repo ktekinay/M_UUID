@@ -214,7 +214,7 @@ Protected Module M_UUID
 	#tag Constant, Name = kValidatorPattern, Type = String, Dynamic = False, Default = \"(\?x)\n\n\\A\n\n(\?|\n  [[:xdigit:]]{12}\n  ([12345678]) # version\n  [[:xdigit:]]{3}\n  [89AB] [[:xdigit:]]{15}\n  |\n  [[:xdigit:]]{8} - \n  [[:xdigit:]]{4} - \n  ([12345678]) # version\n  [[:xdigit:]]{3} - \n  [89AB][[:xdigit:]]{3} - \n  [[:xdigit:]]{12}\n)\n\n\\z", Scope = Private
 	#tag EndConstant
 
-	#tag Constant, Name = kVersion, Type = String, Dynamic = False, Default = \"1.0", Scope = Protected
+	#tag Constant, Name = kVersion, Type = String, Dynamic = False, Default = \"1.1", Scope = Protected
 	#tag EndConstant
 
 
